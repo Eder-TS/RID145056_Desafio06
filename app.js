@@ -1,16 +1,19 @@
-import express from 'express'
-import bd from './src/configs/baseDeDados.js'
+import express from 'express';
+import iniciarBd from './src/configs/baseDeDados.js';
 
-const app = express()
-const port = 3000
 
-app.use(express.json())
+const app = express();
+const porta = 3000;
 
-bd.run('CREATE TABLE ecommerce (column TEXT)')
-app.get('/', (req, res) => {
-  res.send('Olá Mundo!')
-})
+app.use(express.json());
 
-app.listen(port, () => {
-  console.log(`Servidor rodando em http://localhost:${port}`)
-})
+app.listen(porta, async () => {
+  console.log(`Servidor rodando em http://localhost:${porta}`);
+
+  try {
+    await iniciarBd();
+  } catch (error) {
+    console.log(error);
+  }
+  
+});
