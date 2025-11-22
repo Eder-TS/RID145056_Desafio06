@@ -1,30 +1,14 @@
-import sqlite3 from 'sqlite3'
+import mysql from 'mysql2';
+import 'dotenv/config';
 
-const bd = new sqlite3.Database('bd_dncommerce.db', (erro) => {
-    if (erro) {
-        console.log('Erro ao conectar a base de dados.', erro.message)
-    } else {
-        console.log('Base de dados DNC Commerce conectada.')
-    }
-})
+// Neste ponto o banco de dados já deve ter sido criado no servidor MySQL.
+const bd = mysql.createPool({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
+    waitForConnections: true,
+    connectionLimit: 10,
+});
 
-export default async function iniciarBd() {
-    return new Promise ((resolve, reject) => {
-        bd.run(
-            `
-                CREATE TABLE ecommerce (column TEXT)
-            `,
-            (err) => {
-                if (err) {
-                    if (err.message === 'SQLITE_ERROR: table ecommerce already exists') {
-                        reject({message: 'Tabela ecommerce já existe, banco de dados já está operacional.'});
-                    } else {
-                        reject({message: `Comunique o suporte, ${err.message} `})
-                    }
-                } else {
-                    resolve({message: 'Tabela criada com sucesso.'});
-                }
-            }
-        );
-    });
-};
+export default bd;
