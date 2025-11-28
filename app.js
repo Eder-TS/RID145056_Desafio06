@@ -1,13 +1,14 @@
 import express from 'express';
 import bd from './src/configs/baseDeDados.js';
 import 'dotenv/config';
-import rodarMigrations from './src/migrations/rodarMigrations.js';
-
+import routes from './src/modules/routes/index.js';
 
 const app = express();
 const porta = process.env.PORTA_SERVIDOR;
 
 app.use(express.json());
+
+app.use(routes);
 
 bd.getConnection(async (err, conn) => {
   if (err) {
